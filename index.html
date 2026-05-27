@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>グリモワール・コード —終焉の託宣：鬼神歴記—</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="stars-overlay"></div>
+    <div class="noise-overlay"></div>
+
+    <div class="app-container">
+        <div id="screen-setup" class="screen active">
+            <h1 class="glow-text">『グリモワール・コード』<br><span class="subtitle">—終焉の託宣：鬼神歴記—</span></h1>
+            <div class="status-panel">
+                <span class="status-label">現在の魔位:</span>
+                <span id="player-level" class="status-value">LV. 1</span>
+                <span class="status-rank" id="player-rank">【下級魔術師】</span>
+            </div>
+            
+            <div class="ritual-selection-box">
+                <p class="section-title">執行せし禁忌の儀式を選択せよ</p>
+                
+                <div class="ritual-item-wrapper">
+                    <button class="ritual-btn" data-ritual="0">天命反転・神殺しの呪詛 (金運・全体運)</button>
+                    <div class="ritual-guide-text">【正しき真言】急々如律令 ➔ 我が血を糧に ➔ 神仏を屠れ</div>
+                </div>
+
+                <div class="ritual-item-wrapper">
+                    <button class="ritual-btn" data-ritual="1">煉獄の狂宴・因果律崩壊 (勝負運・対人)</button>
+                    <div class="ritual-guide-text">【正しき真言】黒焔よ滾れ ➔ 時空の歪みより ➔ 万象を灰燼に帰せ</div>
+                </div>
+
+                <div class="ritual-item-wrapper">
+                    <button class="ritual-btn" data-ritual="2">幽冥の刻印・深淵覚醒 (呪術・インスピレーション)</button>
+                    <div class="ritual-guide-text">【正しき真言】開門せよ ➔ 常闇の彼方から ➔ 深淵の王を呼び覚ませ</div>
+                </div>
+            </div>
+            
+            <button id="btn-view-records" class="alt-btn">黙示録記録 (アカシックレコード) を開帳</button>
+        </div>
+
+        <div id="screen-chant" class="screen">
+            <h2 class="ritual-title">第一儀式：詠唱構築</h2>
+            <div class="progress-indicator">
+                <span id="step-dot-1" class="dot active"></span>
+                <span id="step-dot-2" class="dot"></span>
+                <span id="step-dot-3" class="dot"></span>
+            </div>
+            <div class="chant-display-box">
+                <p class="chant-theme" id="current-ritual-name">呪詛名</p>
+                <div id="constructed-text" class="constructed-text">（呪詛を紡げ…）</div>
+            </div>
+
+            <div class="magic-circle-container">
+                <div class="magic-circle" id="timer-circle"></div>
+                <div class="timer-text" id="timer-countdown">0.00</div>
+            </div>
+
+            <div class="choice-container" id="chant-choices">
+                </div>
+        </div>
+
+        <div id="screen-trace" class="screen">
+            <h2 class="ritual-title">第二儀式：魔印の束縛</h2>
+            <p class="instruction-text">中心の呪印（五芒星）を、一筆ですべてなぞり解放せよ</p>
+            
+            <div class="canvas-container">
+                <canvas id="trace-canvas" width="320" height="320"></canvas>
+                <div class="canvas-hint">※各頂点を順番になぞり、円を描くように結べ</div>
+            </div>
+            
+            <div class="chant-complete-preview" id="final-chant-preview"></div>
+        </div>
+
+        <div id="screen-result" class="screen">
+            <div class="demon-summon-effect"></div>
+            <h2 class="ritual-title">第三儀式：深淵の託宣</h2>
+            
+            <div class="demon-card">
+                <div class="demon-identity">
+                    <span id="demon-rank" class="demon-rank">【深淵の王】</span>
+                    <h3 id="demon-name" class="demon-name">魔人：ルシファー</h3>
+                </div>
+                <div class="demon-dialogue" id="demon-speech">
+                    「よくぞ我が封印を解いた、人間風情が……」
+                </div>
+            </div>
+
+            <div class="oracle-box">
+                <div class="oracle-grade" id="oracle-fortune">大吉</div>
+                <div class="oracle-title" id="oracle-title">『天命反転・神殺しの呪詛』</div>
+                <p class="oracle-desc" id="oracle-desc">運命の鎖を引きちぎり、神仏さえも道を譲る全能の日。</p>
+            </div>
+
+            <div class="relic-box">
+                <span class="relic-label">本日授かりし聖遺物:</span>
+                <span class="relic-name" id="relic-item">漆黒の魔力を宿す魔筆（ダーク_インカー）</span>
+            </div>
+
+            <button id="btn-return-home" class="ritual-btn font-gothic">現世への帰還・境界を閉じる</button>
+        </div>
+
+        <div id="screen-failure" class="screen">
+            <div class="glitch-bg"></div>
+            <h1 class="failure-title">魔力暴走</h1>
+            <p class="failure-sub">偽りの呪文が、因果の破滅を呼び起こした</p>
+            
+            <div class="demon-card failure-card">
+                <p id="failure-speech">「愚か者が！身の程を知れ！」</p>
+            </div>
+
+            <button id="btn-retry" class="ritual-btn retry-btn">魂を再構築する（タイトルへ）</button>
+        </div>
+
+        <div id="screen-records" class="screen">
+            <h2 class="ritual-title">黙示録記録<br><span style="font-size:12px; color:#c5a059;">- ACASHIC RECORDS -</span></h2>
+            <p class="instruction-text">過去に執行されし禁忌の契約ログ</p>
+            
+            <div class="records-list" id="records-list">
+                <p class="empty-message">未だ深淵との契約は記録されていない...</p>
+            </div>
+
+            <button id="btn-close-records" class="alt-btn">黙示録を封印する</button>
+        </div>
+    </div>
+
+    <script src="javascript.js"></script>
+</body>
+</html>
