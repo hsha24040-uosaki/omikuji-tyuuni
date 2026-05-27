@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>グリモワール・コード —終焉の託宣：鬼神歴記—</title>
+    <title>グリモワール・コード —終焉の託宣：鬼神歴記— v5.2</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,32 +13,30 @@
     <div class="app-container">
         <div id="screen-setup" class="screen active">
             <h1 class="glow-text">『グリモワール・コード』<br><span class="subtitle">—終焉の託宣：鬼神歴記—</span></h1>
+            
             <div class="status-panel">
                 <span class="status-label">現在の魔位:</span>
                 <span id="player-level" class="status-value">LV. 1</span>
+                <button id="btn-level-info" class="info-eye-btn" title="魔位の特権を確認">👁</button>
                 <span class="status-rank" id="player-rank">【下級魔術師】</span>
             </div>
             
             <div class="ritual-selection-box">
                 <p class="section-title">執行せし禁忌の儀式を選択せよ</p>
-                
                 <div class="ritual-item-wrapper">
-                    <button class="ritual-btn" data-ritual="0">天命反転・神殺しの呪詛 (金運・全体運)</button>
-                    <div class="ritual-guide-text">【正しき真言】急々如律令 ➔ 我が血を糧に ➔ 神仏を屠れ</div>
+                    <button class="ritual-btn" data-ritual="0">天命反転・神殺しの呪詛 (全体運)</button>
+                    <div class="ritual-guide-text">【真言】急々如律令 ➔ 我が血を糧に ➔ 神仏を屠れ</div>
                 </div>
-
                 <div class="ritual-item-wrapper">
-                    <button class="ritual-btn" data-ritual="1">煉獄の狂宴・因果律崩壊 (勝負運・対人)</button>
-                    <div class="ritual-guide-text">【正しき真言】黒焔よ滾れ ➔ 時空の歪みより ➔ 万象を灰燼に帰せ</div>
+                    <button class="ritual-btn" data-ritual="1">煉獄の狂宴・因果律崩壊 (勝負運)</button>
+                    <div class="ritual-guide-text">【真言】黒焔よ滾れ ➔ 時空の歪みより ➔ 万象を灰燼に帰せ</div>
                 </div>
-
                 <div class="ritual-item-wrapper">
-                    <button class="ritual-btn" data-ritual="2">幽冥の刻印・深淵覚醒 (呪術・インスピレーション)</button>
-                    <div class="ritual-guide-text">【正しき真言】開門せよ ➔ 常闇の彼方から ➔ 深淵の王を呼び覚ませ</div>
+                    <button class="ritual-btn" data-ritual="2">幽冥の刻印・深淵覚醒 (呪術運)</button>
+                    <div class="ritual-guide-text">【真言】開門せよ ➔ 常闇の彼方から ➔ 深淵の王を呼び覚ませ</div>
                 </div>
             </div>
-            
-            <button id="btn-view-records" class="alt-btn">黙示録記録 (アカシックレコード) を開帳</button>
+            <button id="btn-view-records" class="alt-btn">黙示録（アーカイブ）を開帳</button>
         </div>
 
         <div id="screen-chant" class="screen">
@@ -52,77 +50,110 @@
                 <p class="chant-theme" id="current-ritual-name">呪詛名</p>
                 <div id="constructed-text" class="constructed-text">（呪詛を紡げ…）</div>
             </div>
-
             <div class="magic-circle-container">
                 <div class="magic-circle" id="timer-circle"></div>
                 <div class="timer-text" id="timer-countdown">0.00</div>
             </div>
-
-            <div class="choice-container" id="chant-choices">
-                </div>
+            <div class="choice-container" id="chant-choices"></div>
         </div>
 
         <div id="screen-trace" class="screen">
             <h2 class="ritual-title">第二儀式：魔印の束縛</h2>
-            <p class="instruction-text">中心の呪印（五芒星）を、一筆ですべてなぞり解放せよ</p>
-            
+            <div class="trace-info-zone">
+                <p id="trace-instruction" class="instruction-text"></p>
+                <div class="chant-complete-preview" id="final-chant-preview"></div>
+            </div>
             <div class="canvas-container">
                 <canvas id="trace-canvas" width="320" height="320"></canvas>
-                <div class="canvas-hint">※各頂点を順番になぞり、円を描くように結べ</div>
+                <div class="canvas-hint">※輝く頂点を順番に繋ぎ、一周させて封印を解け</div>
             </div>
-            
-            <div class="chant-complete-preview" id="final-chant-preview"></div>
         </div>
 
         <div id="screen-result" class="screen">
             <div class="demon-summon-effect"></div>
             <h2 class="ritual-title">第三儀式：深淵の託宣</h2>
-            
             <div class="demon-card">
                 <div class="demon-identity">
-                    <span id="demon-rank" class="demon-rank">【深淵の王】</span>
-                    <h3 id="demon-name" class="demon-name">魔人：ルシファー</h3>
+                    <span id="demon-rank" class="demon-rank"></span>
+                    <h3 id="demon-name" class="demon-name"></h3>
                 </div>
-                <div class="demon-dialogue" id="demon-speech">
-                    「よくぞ我が封印を解いた、人間風情が……」
-                </div>
+                <div class="demon-dialogue" id="demon-speech"></div>
             </div>
-
             <div class="oracle-box">
-                <div class="oracle-grade" id="oracle-fortune">大吉</div>
-                <div class="oracle-title" id="oracle-title">『天命反転・神殺しの呪詛』</div>
-                <p class="oracle-desc" id="oracle-desc">運命の鎖を引きちぎり、神仏さえも道を譲る全能の日。</p>
+                <div class="oracle-grade" id="oracle-fortune"></div>
+                <div class="oracle-title" id="oracle-title"></div>
+                <p class="oracle-desc" id="oracle-desc"></p>
             </div>
-
             <div class="relic-box">
-                <span class="relic-label">本日授かりし聖遺物:</span>
-                <span class="relic-name" id="relic-item">漆黒の魔力を宿す魔筆（ダーク_インカー）</span>
+                <div class="relic-header">
+                    <span class="relic-label">本日授かりし聖遺物:</span>
+                    <span class="relic-name" id="relic-item"></span>
+                </div>
+                <p class="relic-effect-text" id="relic-effect-desc"></p>
             </div>
-
-            <button id="btn-return-home" class="ritual-btn font-gothic">現世への帰還・境界を閉じる</button>
+            <button id="btn-return-home" class="ritual-btn">現世への帰還・境界を閉じる</button>
         </div>
 
         <div id="screen-failure" class="screen">
-            <div class="glitch-bg"></div>
             <h1 class="failure-title">魔力暴走</h1>
             <p class="failure-sub">偽りの呪文が、因果の破滅を呼び起こした</p>
-            
             <div class="demon-card failure-card">
-                <p id="failure-speech">「愚か者が！身の程を知れ！」</p>
+                <p id="failure-speech"></p>
             </div>
-
             <button id="btn-retry" class="ritual-btn retry-btn">魂を再構築する（タイトルへ）</button>
         </div>
 
         <div id="screen-records" class="screen">
-            <h2 class="ritual-title">黙示録記録<br><span style="font-size:12px; color:#c5a059;">- ACASHIC RECORDS -</span></h2>
-            <p class="instruction-text">過去に執行されし禁忌の契約ログ</p>
+            <h2 class="ritual-title">黙示録記録</h2>
             
-            <div class="records-list" id="records-list">
-                <p class="empty-message">未だ深淵との契約は記録されていない...</p>
-            </div>
+            <div class="tab-container">
+                <p class="archive-section-title">✦ 過去の契約ログ (アカシックレコード)</p>
+                <div class="records-list" id="records-list"></div>
+                
+                <p class="archive-section-title" style="margin-top: 25px;">✦ 深淵の魔人図鑑 (デーモン・アーカイブ)</p>
+                <div class="demon-book-grid" id="demon-book-grid"></div>
 
+                <p class="archive-section-title" style="margin-top: 25px;">✦ 禁忌の聖遺物図鑑 (レリック・アーカイブ)</p>
+                <div class="relic-book-grid" id="relic-book-grid"></div>
+            </div>
+            
             <button id="btn-close-records" class="alt-btn">黙示録を封印する</button>
+        </div>
+    </div>
+
+    <div id="level-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="modal-title">魔位上昇の秘録</h3>
+            <p class="modal-desc">儀式を執り行うことでお前の「魔位（LV）」は永続的に上昇し、深淵の理（システム）が書き換わる。</p>
+            
+            <table class="modal-table">
+                <thead>
+                    <tr>
+                        <th>現在の魔位</th>
+                        <th>召喚される魔人の格 / 変革</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LV. 1〜9</td>
+                        <td><span style="color:#a49a88;">【下級式神】</span>が顕現。人間を見下す態度を取る。</td>
+                    </tr>
+                    <tr>
+                        <td>LV. 10〜19</td>
+                        <td><span style="color:#9370db;">【堕天使】</span>の封印解除。魔印が「六芒星」へ進化。</td>
+                    </tr>
+                    <tr>
+                        <td>LV. 20〜29</td>
+                        <td><span style="color:#e6194b;">【吸血鬼】</span>が目覚める。魔印が「七芒星」へ深化。<br><small style="color:#c5a059;">※下級式神が恐怖し、態度を軟化させ始める。</small></td>
+                    </tr>
+                    <tr>
+                        <td>LV. 30以上</td>
+                        <td>最上位<span style="color:#ff0000; font-weight:bold;">【深淵の王】</span>が降臨。魔印は最高難度「八芒星」へ。<br><small style="color:#c5a059;">※高位の魔人たちがお前を「主（マスター）」と認め、従属の誓いを立てる。</small></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <button id="btn-close-modal" class="ritual-btn" style="text-align:center; margin-top:15px; width:100%;">理解した</button>
         </div>
     </div>
 

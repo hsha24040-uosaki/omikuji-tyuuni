@@ -1,542 +1,113 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;900&family=Noto+Serif+JP:wght@600;900&display=swap');
 
-*, *::before, *::after {
-    box-sizing: border-box;
-}
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
-    margin: 0;
-    padding: 0;
-    background-color: #000000;
-    color: #e0d8cb;
-    font-family: 'Noto Serif JP', 'Cinzel', serif;
-    overflow-x: hidden;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    user-select: none;
+    margin: 0; background-color: #000; color: #e0d8cb;
+    font-family: 'Noto Serif JP', serif; height: 100vh;
+    display: flex; justify-content: center; align-items: center; overflow: hidden;
 }
 
-/* 背景演出 */
 .stars-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: radial-gradient(circle at center, #1a0b2e 0%, #000000 100%);
-    z-index: -2;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at center, #1a0b2e 0%, #000 100%); z-index: -2;
 }
 
 .noise-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
-    z-index: -1;
-    pointer-events: none;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+    z-index: -1; pointer-events: none;
 }
 
-/* メインコンテナ */
+/* アプリ全体コンテナ：中央配置の絶対死守 */
 .app-container {
-    width: 100%;
-    max-width: 450px;
-    height: 100vh;
-    max-height: 850px;
-    background-color: rgba(10, 5, 15, 0.95);
-    border: 2px solid #c5a059;
-    box-shadow: 0 0 30px rgba(139, 0, 0, 0.3), inset 0 0 20px rgba(197, 160, 89, 0.1);
-    position: relative;
-    overflow: hidden;
+    width: 450px; height: 100vh; max-height: 850px;
+    background-color: rgba(10, 5, 15, 0.95); border: 2px solid #c5a059;
+    box-shadow: 0 0 30px rgba(139, 0, 0, 0.3); position: relative; overflow: hidden;
+    margin: 0 auto;
 }
 
-/* 画面の切り替え管理 */
 .screen {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    padding: 30px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.5s ease;
-    overflow-y: auto;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    padding: 25px 20px; display: none; flex-direction: column; align-items: center;
 }
+.screen.active { display: flex; }
 
-.screen.active {
-    opacity: 1;
-    pointer-events: auto;
+.glow-text { color: #c5a059; text-shadow: 0 0 10px #c5a059; text-align: center; margin-top: 20px; font-size: 22px; }
+.subtitle { font-size: 14px; color: #8b0000; display: block; margin-top: 5px; }
+
+.status-panel { 
+    background: rgba(26, 11, 46, 0.6); padding: 8px 15px; border: 1px solid rgba(197, 160, 89, 0.4); 
+    margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; border-radius: 4px;
 }
-
-/* タイポグラフィとテキスト装飾 */
-.glow-text {
-    text-align: center;
-    font-size: 24px;
-    font-weight: 900;
-    color: #c5a059;
-    text-shadow: 0 0 10px rgba(197, 160, 89, 0.6);
-    margin-top: 40px;
-    line-height: 1.4;
+.info-eye-btn {
+    background: none; border: none; color: #ff0000; font-size: 16px; cursor: pointer;
+    text-shadow: 0 0 5px #ff0000; animation: blink 2s infinite alternate; padding: 0 5px;
 }
-
-.glow-text .subtitle {
-    font-size: 16px;
-    color: #8b0000;
-    text-shadow: 0 0 8px rgba(139, 0, 0, 0.8);
-}
-
-.ritual-title {
-    font-size: 20px;
-    color: #c5a059;
-    text-align: center;
-    border-left: 4px solid #8b0000;
-    border-right: 4px solid #8b0000;
-    padding: 0 15px;
-    margin-bottom: 25px;
-    letter-spacing: 2px;
-}
-
-.section-title {
-    color: #c5a059;
-    font-size: 14px;
-    text-align: center;
-    margin-bottom: 15px;
-    letter-spacing: 1px;
-}
-
-.instruction-text {
-    font-size: 12px;
-    color: #a49a88;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-/* ステータスパネル */
-.status-panel {
-    background-color: rgba(26, 11, 46, 0.6);
-    border: 1px solid rgba(197, 160, 89, 0.3);
-    padding: 8px 20px;
-    margin-top: 20px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-}
-
-.status-label { color: #a49a88; }
+@keyframes blink { from { opacity: 0.4; } to { opacity: 1; } }
 .status-value { color: #c5a059; font-weight: bold; }
 .status-rank { color: #8b0000; font-weight: bold; }
 
-/* ボタン類と儀式ガイド */
-.ritual-selection-box {
-    width: 100%;
-    margin-top: 35px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
+.ritual-selection-box { width: 100%; margin-top: 25px; display: flex; flex-direction: column; gap: 15px; }
+.ritual-btn { background: linear-gradient(135deg, #1a0b2e 0%, #0a050f 100%); border: 1px solid #c5a059; color: #e0d8cb; padding: 12px; cursor: pointer; text-align: center; font-family: inherit; width: 100%; }
+.ritual-btn:hover { border-color: #8b0000; box-shadow: 0 0 10px #8b0000; }
+.ritual-guide-text { font-size: 10px; color: #a49a88; font-style: italic; border-left: 2px solid #8b0000; padding-left: 10px; margin-top: 3px; text-align: left; }
 
-.ritual-item-wrapper {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
+.ritual-title { font-family: 'Cinzel', serif; color: #c5a059; border-left: 4px solid #8b0000; border-right: 4px solid #8b0000; padding: 0 15px; margin-bottom: 20px; letter-spacing: 2px; font-size: 18px; text-align: center; }
+.archive-section-title { color: #c5a059; font-size: 12px; width: 100%; border-bottom: 1px solid rgba(197, 160, 89, 0.3); padding-bottom: 4px; margin: 15px 0 10px 0; font-weight: bold; text-align: left; }
 
-.ritual-btn {
-    width: 100%;
-    background: linear-gradient(135deg, #1a0b2e 0%, #0a050f 100%);
-    border: 1px solid #c5a059;
-    color: #e0d8cb;
-    padding: 14px;
-    font-family: 'Noto Serif JP', serif;
-    font-size: 13px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    text-align: left;
-    padding-left: 20px;
-    border-radius: 2px;
-}
+.magic-circle-container { position: relative; width: 130px; height: 130px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; }
+.magic-circle { position: absolute; width: 100%; height: 100%; border: 2px dashed #c5a059; border-radius: 50%; animation: rotate 20s linear infinite; }
+@keyframes rotate { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+.timer-text { font-family: 'Cinzel'; font-size: 18px; color: #8b0000; font-weight: bold; }
 
-.ritual-btn::before {
-    content: '◆';
-    color: #8b0000;
-    margin-right: 10px;
-    transition: color 0.3s;
-}
+.choice-btn { width: 100%; background: rgba(26, 11, 46, 0.5); border: 1px solid #c5a059; color: #e0d8cb; padding: 12px; margin-bottom: 10px; cursor: pointer; font-family: inherit; text-align: center; }
 
-.ritual-btn:hover {
-    border-color: #8b0000;
-    box-shadow: 0 0 12px rgba(139, 0, 0, 0.5);
-    background: linear-gradient(135deg, #2a0f44 0%, #150522 100%);
-    color: #ffffff;
-}
+/* 第二儀式情報ゾーンのセンタリング */
+.trace-info-zone { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 15px; min-height: 50px; text-align: center; }
+.instruction-text { margin: 0; color: #e0d8cb; font-size: 14px; font-weight: bold; }
+.chant-complete-preview { margin: 0; font-size: 11px; color: #a49a88; font-style: italic; background: rgba(139,0,0,0.1); padding: 4px 10px; border-radius: 10px; border: 1px dashed rgba(139,0,0,0.3); }
 
-.ritual-guide-text {
-    font-size: 11px;
-    color: #a49a88;
-    padding-left: 20px;
-    font-style: italic;
-    letter-spacing: 0.5px;
-    border-left: 2px solid rgba(139, 0, 0, 0.4);
-    margin-left: 2px;
-}
+.canvas-container { position: relative; width: 320px; height: 320px; background: rgba(0,0,0,0.5); border: 1px solid #c5a059; margin: 0 auto; }
+.canvas-hint { position: absolute; bottom: 8px; width: 100%; text-align: center; font-size: 9px; color: #a49a88; pointer-events: none; }
 
-.alt-btn {
-    margin-top: auto;
-    margin-bottom: 20px;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid #c5a059;
-    color: #a49a88;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-family: 'Noto Serif JP', serif;
-    font-size: 12px;
-    transition: color 0.3s;
-}
+.demon-card { width: 100%; background: #1a0b2e; border: 1px solid #8b0000; padding: 12px; margin-bottom: 12px; text-align: left; }
+.demon-name { color: #c5a059; margin: 0; font-size: 15px; }
+.demon-dialogue { font-size: 12px; color: #ffffff; min-height: 36px; margin-top: 5px; }
 
-.alt-btn:hover {
-    color: #c5a059;
-}
+.oracle-box { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #c5a059; padding: 12px; text-align: center; margin-bottom: 12px; }
+.oracle-grade { font-size: 26px; color: #8b0000; text-shadow: 0 0 10px #8b0000; font-weight: 900; }
 
-/* 詠唱構築UI */
-.progress-indicator {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
+.relic-box { width: 100%; background: #120b1a; border-left: 3px solid #c5a059; padding: 10px 12px; font-size: 12px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 4px; text-align: left; }
+.relic-header { display: flex; align-items: center; gap: 8px; }
+.relic-label { color: #a49a88; font-size: 11px; }
+.relic-name { color: #c5a059; font-weight: bold; text-shadow: 0 0 5px rgba(197,160,89,0.3); }
+.relic-effect-text { margin: 0; font-size: 11px; color: #ffffff; font-style: italic; line-height: 1.4; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 3px; }
 
-.progress-indicator .dot {
-    width: 8px;
-    height: 8px;
-    background-color: #221530;
-    border-radius: 50%;
-    border: 1px solid #c5a059;
-}
+.failure-title { font-size: 36px; color: #ff0000; text-shadow: 0 0 15px #8b0000; margin-top: 60px; text-align: center; }
+.failure-sub { text-align: center; font-size: 12px; }
+.alt-btn { background: none; border: none; border-bottom: 1px solid #c5a059; color: #a49a88; cursor: pointer; margin-top: auto; padding-bottom: 5px; font-family: inherit; font-size: 12px; display: block; text-align: center; margin-left: auto; margin-right: auto; }
 
-.progress-indicator .dot.active {
-    background-color: #8b0000;
-    box-shadow: 0 0 8px #8b0000;
-}
+/* スクロールエリア調整 */
+.tab-container { width: 100%; flex-grow: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 15px; }
+.records-list { display: flex; flex-direction: column; gap: 8px; max-height: 160px; overflow-y: auto; width: 100%; }
+.record-item { background: rgba(26,11,46,0.4); border: 1px solid rgba(197,160,89,0.2); padding: 8px; font-size: 11px; text-align: left; width: 100%; }
+.empty-message { font-size: 11px; color: #a49a88; font-style: italic; text-align: center; margin: 10px 0; }
 
-.chant-display-box {
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(197, 160, 89, 0.2);
-    padding: 15px;
-    text-align: center;
-    border-radius: 4px;
-    margin-bottom: 25px;
-}
+.demon-book-grid, .relic-book-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+.book-item { background: rgba(0,0,0,0.6); border: 1px solid rgba(139,0,0,0.3); padding: 10px; border-radius: 4px; display: flex; flex-direction: column; gap: 4px; text-align: left; }
+.book-item.unlocked { border-color: #c5a059; background: linear-gradient(180deg, #11051c 0%, #000000 100%); }
+.book-rank { font-size: 9px; color: #8b0000; font-weight: bold; }
+.book-name { font-size: 13px; color: #554e43; font-weight: bold; }
+.book-item.unlocked .book-name { color: #c5a059; }
+.book-speech { font-size: 10px; color: #a49a88; font-style: italic; line-height: 1.3; border-top: 1px dashed rgba(197,160,89,0.2); padding-top: 4px; }
 
-.chant-theme {
-    font-size: 11px;
-    color: #8b0000;
-    margin: 0 0 8px 0;
-    letter-spacing: 1px;
-}
-
-.constructed-text {
-    font-size: 15px;
-    min-height: 24px;
-    color: #ffffff;
-    letter-spacing: 1px;
-}
-
-/* 魔法陣タイマーデザイン */
-.magic-circle-container {
-    position: relative;
-    width: 140px;
-    height: 140px;
-    margin-bottom: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.magic-circle {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border: 2px dashed #c5a059;
-    border-radius: 50%;
-    animation: rotateCircle 20s linear infinite;
-    opacity: 0.7;
-}
-
-.magic-circle::before {
-    content: '';
-    position: absolute;
-    top: 8px; left: 8px; right: 8px; bottom: 8px;
-    border: 1px solid #8b0000;
-    border-radius: 50%;
-}
-
-@keyframes rotateCircle {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.timer-text {
-    font-family: 'Cinzel', serif;
-    font-size: 20px;
-    color: #8b0000;
-    font-weight: bold;
-    text-shadow: 0 0 5px rgba(139, 0, 0, 0.5);
-}
-
-.choice-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.choice-btn {
-    width: 100%;
-    background: rgba(26, 11, 46, 0.5);
-    border: 1px solid rgba(197, 160, 89, 0.4);
-    color: #e0d8cb;
-    padding: 12px 15px;
-    font-family: 'Noto Serif JP', serif;
-    font-size: 13px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border-radius: 4px;
-}
-
-.choice-btn:hover {
-    border-color: #c5a059;
-    background: rgba(139, 0, 0, 0.15);
-    color: #fff;
-}
-
-/* 第二儀式（トレース）UI */
-.canvas-container {
-    position: relative;
-    width: 320px;
-    height: 320px;
-    background-color: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(197, 160, 89, 0.3);
-    margin-bottom: 20px;
-    border-radius: 4px;
-}
-
-#trace-canvas {
-    position: absolute;
-    top: 0; left: 0;
-    cursor: crosshair;
-}
-
-.canvas-hint {
-    position: absolute;
-    bottom: -25px;
-    width: 100%;
-    text-align: center;
-    font-size: 10px;
-    color: #8b0000;
-}
-
-.chant-complete-preview {
-    margin-top: 40px;
-    font-size: 13px;
-    color: #c5a059;
-    text-align: center;
-    font-style: italic;
-    max-width: 90%;
-}
-
-/* 第三儀式（結果・魔人降臨） */
-.demon-card {
-    width: 100%;
-    background: linear-gradient(180deg, #1a0b2e 0%, rgba(0,0,0,0.8) 100%);
-    border: 1px solid #8b0000;
-    border-radius: 4px;
-    padding: 15px;
-    margin-bottom: 25px;
-    box-shadow: 0 0 15px rgba(139, 0, 0, 0.2);
-}
-
-.demon-identity {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-bottom: 1px solid rgba(139, 0, 0, 0.4);
-    padding-bottom: 6px;
-    margin-bottom: 10px;
-}
-
-.demon-rank {
-    font-size: 11px;
-    color: #8b0000;
-    font-weight: bold;
-}
-
-.demon-name {
-    margin: 0;
-    font-size: 15px;
-    color: #c5a059;
-}
-
-.demon-dialogue {
-    font-size: 13px;
-    line-height: 1.5;
-    color: #ffffff;
-    min-height: 40px;
-}
-
-.oracle-box {
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(197, 160, 89, 0.3);
-    border-radius: 4px;
-    padding: 20px;
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.oracle-grade {
-    font-size: 32px;
-    font-weight: 900;
-    color: #8b0000;
-    text-shadow: 0 0 12px rgba(139, 0, 0, 0.6);
-    margin-bottom: 10px;
-    letter-spacing: 4px;
-}
-
-.oracle-title {
-    font-size: 14px;
-    color: #c5a059;
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
-.oracle-desc {
-    font-size: 12px;
-    color: #e0d8cb;
-    margin: 0;
-    line-height: 1.6;
-}
-
-.relic-box {
-    width: 100%;
-    background-color: #120b1a;
-    border-left: 3px solid #c5a059;
-    padding: 10px 15px;
-    font-size: 12px;
-    margin-bottom: 35px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.relic-label { color: #a49a88; }
-.relic-name { color: #c5a059; font-weight: bold; }
-
-/* 失敗（魔力暴走）UI */
-#screen-failure {
-    background-color: #120202;
-}
-
-.failure-title {
-    font-size: 36px;
-    color: #ff0000;
-    text-shadow: 0 0 15px #8b0000;
-    margin-top: 80px;
-    margin-bottom: 10px;
-    letter-spacing: 4px;
-    animation: pulse 1.5s infinite alternate;
-}
-
-@keyframes pulse {
-    from { transform: scale(1); opacity: 0.9; }
-    to { transform: scale(1.03); opacity: 1; }
-}
-
-.failure-sub {
-    font-size: 12px;
-    color: #a49a88;
-    margin-bottom: 40px;
-}
-
-.failure-card {
-    border-color: #ff0000;
-    background: rgba(0, 0, 0, 0.8);
-    text-align: center;
-    color: #ffcccc;
-}
-
-.retry-btn {
-    border-color: #ff0000;
-    background: #2a0000;
-    text-align: center;
-    margin-top: 40px;
-}
-.retry-btn:hover {
-    background: #540000;
-    border-color: #ff3333;
-    box-shadow: 0 0 15px #ff0000;
-}
-
-/* アカシックレコードUI */
-.records-list {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 10px;
-    max-height: 500px;
-    overflow-y: auto;
-    padding-right: 5px;
-}
-
-.record-item {
-    background-color: rgba(26, 11, 46, 0.4);
-    border: 1px solid rgba(197, 160, 89, 0.2);
-    border-radius: 4px;
-    padding: 12px;
-}
-
-.record-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: #a49a88;
-    border-bottom: 1px dashed rgba(197, 160, 89, 0.2);
-    padding-bottom: 4px;
-    margin-bottom: 6px;
-}
-
-.record-body {
-    font-size: 12px;
-}
-
-.record-fortune {
-    color: #8b0000;
-    font-weight: bold;
-    margin-right: 6px;
-}
-
-.empty-message {
-    text-align: center;
-    color: #554e43;
-    font-size: 12px;
-    margin-top: 40px;
-    font-style: italic;
-}
-
-/* スクロールバー装飾 */
-::-webkit-scrollbar {
-    width: 4px;
-}
-::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0.1);
-}
-::-webkit-scrollbar-thumb {
-    background: #c5a059;
-    border-radius: 2px;
-}
+/* モーダルポップアップ設定 */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; display: none; justify-content: center; align-items: center; padding: 20px; }
+.modal-overlay.active { display: flex; }
+.modal-content { background: #0a050f; border: 2px solid #c5a059; max-width: 400px; width: 100%; padding: 20px; box-shadow: 0 0 25px #8b0000; border-radius: 4px; text-align: left; }
+.modal-title { margin: 0 0 10px 0; color: #c5a059; font-size: 16px; border-bottom: 1px solid #8b0000; padding-bottom: 5px; text-align: center; }
+.modal-desc { font-size: 12px; line-height: 1.5; color: #e0d8cb; margin-bottom: 15px; }
+.modal-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 15px; }
+.modal-table th, .modal-table td { border: 1px solid rgba(197,160,89,0.3); padding: 6px; text-align: left; }
+.modal-table th { background: #1a0b2e; color: #c5a059; }
